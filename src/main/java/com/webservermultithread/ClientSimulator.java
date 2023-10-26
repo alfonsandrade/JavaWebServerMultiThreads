@@ -13,15 +13,12 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class ClientSimulator {
-
     private static final Logger logger = LoggerFactory.getLogger(ClientSimulator.class);
-
     private static final String HOST = "localhost";
     private static final int PORT = 8080;
-    private static final int NUM_CLIENTS = 10;  // Number of clients to simulate
-    private static final long START_INTERVAL = 100;  // milliseconds
-    private static final long MAX_INTERVAL = 3000;  // milliseconds
-
+    private static final int NUM_CLIENTS = 10;
+    private static final long START_INTERVAL = 100;
+    private static final long MAX_INTERVAL = 3000;
     public static void main(String[] args) {
         List<Thread> threads = new ArrayList<>();
         long currentInterval = START_INTERVAL;
@@ -30,7 +27,7 @@ public class ClientSimulator {
         scheduler.scheduleAtFixedRate(() -> {
             try {
                 logger.info("Scheduler triggered.");
-                ClientSimulator.main(new String[]{});  // Recursive call
+                ClientSimulator.main(new String[]{});
             } catch (Exception e) {
                 logger.error("Error in the scheduler task.", e);
             }
@@ -38,20 +35,17 @@ public class ClientSimulator {
 
         for (int i = 0; i < NUM_CLIENTS; i++) {
             try {
-                Thread.sleep(currentInterval);  // Introducing interval
-
+                Thread.sleep(currentInterval);
                 Thread thread = new Thread(() -> {
                     try (Socket socket = new Socket(HOST, PORT);
                          PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
                          BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
 
-                        // Send an HTTP GET request
                         out.println("GET / HTTP/1.1");
                         out.println("Host: " + HOST);
                         out.println("Connection: Close");
                         out.println();
 
-                        // Read the server's response
                         String responseLine;
                         while ((responseLine = in.readLine()) != null) {
                             logger.info("Server response: {}", responseLine);
@@ -61,11 +55,8 @@ public class ClientSimulator {
                         logger.error("Failed to connect to server on port {}", PORT, e);
                     }
                 });
-
                 threads.add(thread);
                 thread.start();
-
-                // Update interval (increase for the first 30 seconds and decrease for the next 30 seconds)
                 if (i < NUM_CLIENTS / 2) {
                     currentInterval += (MAX_INTERVAL - START_INTERVAL) / (NUM_CLIENTS / 2);
                 } else {
@@ -75,8 +66,6 @@ public class ClientSimulator {
                 logger.error("Thread sleep interrupted.", e);
             }
         }
-
-        // Optional: Wait for all threads to complete
         for (Thread thread : threads) {
             try {
                 thread.join();

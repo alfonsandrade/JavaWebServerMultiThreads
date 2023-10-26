@@ -11,17 +11,13 @@ import javax.xml.bind.DatatypeConverter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-
 public class Server {
-
     private static final Logger logger = LoggerFactory.getLogger(Server.class);
     private static final AtomicBoolean running = new AtomicBoolean(false);
     private static ServerSocket server;
-
     public static void main(String[] args) {
         start();
     }
-
     public static void start() {
         try {
             server = new ServerSocket(8080);
@@ -68,7 +64,6 @@ public class Server {
         }
         logger.info("Server stopped");
     }
-
     private static void handleClientRequest(Socket socket) {
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -79,7 +74,7 @@ public class Server {
 
             if (line != null) {
                 if (line.startsWith("GET /images/")) {
-                    String imageName = line.split(" ")[1].split("/")[2]; // Extracts the image name
+                    String imageName = line.split(" ")[1].split("/")[2];
                     serveImage(socket, out, imageName);
                 } else if (line.startsWith("GET /")) {
                     serveHtml(out);
@@ -91,7 +86,6 @@ public class Server {
             e.printStackTrace();
         }
     }
-
     private static void serveImage(Socket socket, BufferedWriter out, String imageName) throws IOException {
         InputStream imageStream = Server.class.getClassLoader().getResourceAsStream("images/" + imageName);
         System.out.println("Serving: resources/images/" + imageName);
@@ -107,19 +101,12 @@ public class Server {
 
         byte[] imageBytes = new byte[imageStream.available()];
         imageStream.read(imageBytes);
-        /*
-        String md5Checksum = getMD5Checksum(imageBytes);
-        if (md5Checksum != null) {
-            out.write("Content-MD5: " + md5Checksum + "\r\n");
-        }
-        */
         String mimeType = "image/" + getFileExtension(imageName);
         out.write("HTTP/1.1 200 OK\r\n");
         out.write("Content-Type: " + mimeType + "\r\n");
         out.write("Content-Length: " + imageBytes.length + "\r\n");
         out.write("\r\n");
         out.flush();
-
         DataOutputStream dataOut = new DataOutputStream(socket.getOutputStream());
         dataOut.write(imageBytes);
         dataOut.flush();
@@ -136,7 +123,7 @@ public class Server {
     private static String getFileExtension(String fileName) {
         int lastDot = fileName.lastIndexOf(".");
         if (lastDot == -1) {
-            return ""; // No extension
+            return "";
         }
         return fileName.substring(lastDot + 1).toLowerCase();
     }
@@ -153,15 +140,12 @@ public class Server {
             out.flush();
             return;
         }
-
         BufferedReader reader = new BufferedReader(new InputStreamReader(htmlStream));
         StringBuilder htmlContent = new StringBuilder();
-
         String line;
         while ((line = reader.readLine()) != null) {
             htmlContent.append(line).append("\n");
         }
-
         out.write("HTTP/1.1 200 OK\r\n");
         out.write("Content-Type: text/html\r\n");
         out.write("\r\n");
