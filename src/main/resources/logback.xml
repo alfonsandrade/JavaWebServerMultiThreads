@@ -1,0 +1,44 @@
+<configuration>
+    <!-- Console Appender -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="SERVER" class="ch.qos.logback.core.FileAppender">
+        <file>logs/server.log</file>
+        <encoder>
+            <pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="CLIENT" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/client.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>logs/client.%i.log.zip</fileNamePattern>
+            <minIndex>1</minIndex>
+            <maxIndex>10</maxIndex>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>10MB</maxFileSize>
+        </triggeringPolicy>
+        <encoder>
+            <pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="com.webservermultithread.Server" level="INFO" additivity="false">
+        <appender-ref ref="SERVER"/>
+        <appender-ref ref="STDOUT"/> <!-- Add this to also log to console for the server -->
+    </logger>
+
+    <logger name="com.webservermultithread.ClientSimulator" level="INFO" additivity="false">
+        <appender-ref ref="CLIENT"/>
+        <appender-ref ref="STDOUT"/> <!-- Add this to also log to console for the client simulator -->
+    </logger>
+
+    <root level="OFF">
+        <appender-ref ref="SERVER"/>
+    </root>
+</configuration>
