@@ -1,11 +1,8 @@
 # JavaWebServerMultiThreads
 JavaWebServerMultiThreads" is a cutting-edge multi-threaded web server crafted with Java 17. Harnessing Java's concurrency, it efficiently manages concurrent web requests. With Maven integration, it ensures seamless dependency handling and modular design. This server adeptly serves various web resources, from HTML content to rich media.
 
-Certainly! Here's a description you can use for your `JavaWebServerMultiThreads` project hosted in a Git repository:
-
 ---
-
-A robust and lightweight multi-threaded web server developed using Java 17. This project showcases the capabilities of modern Java and exemplifies the power of concurrency in handling web requests.
+A multi-threaded web server developed using Java 17. This project showcases the capabilities of modern Java and exemplifies the power of concurrency in handling web requests.
 
 #### Features:
 - **Multi-threaded Handling**: Efficiently manages simultaneous connections and ensures smooth request-response operations.
