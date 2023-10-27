@@ -76,9 +76,13 @@ public class Server {
                 if (line.startsWith("GET /images/")) {
                     String imageName = line.split(" ")[1].split("/")[2];
                     serveImage(socket, out, imageName);
-                } else if (line.startsWith("GET /")) {
+                } else if (line.startsWith("GET / ")) {
                     serveHtml(out);
+                } else {
+                    send404Error(out);
                 }
+            } else {
+                send404Error(out);
             }
 
             socket.close();
@@ -86,16 +90,13 @@ public class Server {
             e.printStackTrace();
         }
     }
+
     private static void serveImage(Socket socket, BufferedWriter out, String imageName) throws IOException {
         InputStream imageStream = Server.class.getClassLoader().getResourceAsStream("images/" + imageName);
         System.out.println("Serving: resources/images/" + imageName);
 
         if (imageStream == null) {
-            out.write("HTTP/1.1 404 Not Found\r\n");
-            out.write("Content-Type: text/html\r\n");
-            out.write("\r\n");
-            out.write("<html><body><h1>404 - File Not Found</h1></body></html>");
-            out.flush();
+            send404Error(out);
             return;
         }
 
@@ -150,6 +151,14 @@ public class Server {
         out.write("Content-Type: text/html\r\n");
         out.write("\r\n");
         out.write(htmlContent.toString());
+        out.flush();
+    }
+
+    private static void send404Error(BufferedWriter out) throws IOException {
+        out.write("HTTP/1.1 404 Not Found\r\n");
+        out.write("Content-Type: text/html\r\n");
+        out.write("\r\n");
+        out.write("<html><body><h1>404 - File Not Found</h1></body></html>");
         out.flush();
     }
 }

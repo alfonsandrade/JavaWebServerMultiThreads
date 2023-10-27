@@ -29,7 +29,6 @@ class ServerTest {
 
         String content = readResponseContent(connection);
         logger.info("Received content: {}", content);
-        // Here you can assert or process the content as required
         assertEquals(200, connection.getResponseCode());
     }
 
@@ -39,12 +38,9 @@ class ServerTest {
         URL url = new URL(BASE_URL + "path/to/image");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         assertEquals(200, connection.getResponseCode());
-
         Document doc = Jsoup.parse(readResponseContent(connection));
-        // You can use Jsoup to check if there's an image tag or any other assertions
-        assertNotNull(doc.selectFirst("img[src$=.png]"));  // This checks for an img tag with a PNG source
-
-        assertEquals("text/html", connection.getContentType());  // Note the change here since the content type for an HTML page with an image will be text/html
+        assertNotNull(doc.selectFirst("img[src$=.png]"));
+        assertEquals("text/html", connection.getContentType());
         logger.info("Received content type: {}", connection.getContentType());
     }
 
@@ -53,6 +49,7 @@ class ServerTest {
         logger.info("Starting testNotFoundRequest");
         URL url = new URL(BASE_URL + "path/not/exist");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        System.out.println(connection.getResponseCode());
         assertEquals(404, connection.getResponseCode());
     }
 
